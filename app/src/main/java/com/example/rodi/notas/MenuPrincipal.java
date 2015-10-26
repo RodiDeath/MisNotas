@@ -40,6 +40,7 @@ public class MenuPrincipal extends Activity {
             }
         });
 
+
         recuperarNotas();
     }
 
