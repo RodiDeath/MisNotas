@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.rodi.notas.NuevaNotaActivity">
+
+    <item
+        android:id="@+id/GuardarNota"
+        android:title="GuardarNota"
+        android:icon="@drawable/ic_save_white_24dp"
+        android:showAsAction="always"
+        />
+
+</menu>
