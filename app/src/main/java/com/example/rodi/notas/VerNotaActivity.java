@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class VerNotaActivity extends Activity {
@@ -15,7 +16,14 @@ public class VerNotaActivity extends Activity {
         setContentView(R.layout.activity_ver_nota);
 
         String tituloNota = getIntent().getStringExtra("TituloNota");
-        Toast.makeText(getBaseContext(), tituloNota, Toast.LENGTH_SHORT).show();
+
+        TextView tvTituloNota = (TextView) findViewById(R.id.textViewTitulo);
+        TextView tvTextoNota = (TextView) findViewById(R.id.textViewTexto);
+
+
+        tvTituloNota.setText(tituloNota);
+        tvTextoNota.setText("Texto de " + tituloNota);
+        //Toast.makeText(getBaseContext(), tituloNota, Toast.LENGTH_SHORT).show();
     }
 
     @Override
