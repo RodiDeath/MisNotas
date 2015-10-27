@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/EditarNota"
-        android:title="Editarnota"
+        android:title="Editar Nota"
         android:icon="@drawable/ic_edit_white_24dp"
         android:showAsAction="always"
         />

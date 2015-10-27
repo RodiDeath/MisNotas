@@ -1,13 +1,19 @@
 package com.example.rodi.notas;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VerNotaActivity extends Activity {
+public class VerNotaActivity extends Activity
+{
+    int idNota;
+    BDNotas dbNota;
+    String tituloNota;
+    String textoNota;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -15,15 +21,26 @@ public class VerNotaActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_nota);
 
-        String tituloNota = getIntent().getStringExtra("TituloNota");
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        dbNota = new BDNotas(getApplicationContext());
+
+        tituloNota = getIntent().getStringExtra("TituloNota");
+        textoNota = getIntent().getStringExtra("TextoNota");
+        idNota = getIntent().getIntExtra("IdNota", 0);
 
         TextView tvTituloNota = (TextView) findViewById(R.id.textViewTitulo);
         TextView tvTextoNota = (TextView) findViewById(R.id.textViewTexto);
 
-
         tvTituloNota.setText(tituloNota);
-        tvTextoNota.setText("Texto de " + tituloNota);
+        tvTextoNota.setText(textoNota);
         //Toast.makeText(getBaseContext(), tituloNota, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
     }
 
     @Override
@@ -31,6 +48,13 @@ public class VerNotaActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_ver_nota, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(getApplicationContext(), "RESULT", Toast.LENGTH_SHORT).show();
+        //finish();
     }
 
     @Override
@@ -44,14 +68,30 @@ public class VerNotaActivity extends Activity {
         if (id == R.id.EditarNota)
         {
             // EDITAR NOTA
+            Intent intentModificarNota = new Intent(getBaseContext(), NuevaNotaActivity.class);
+            intentModificarNota.putExtra("accion", "modificar");
+            intentModificarNota.putExtra("titulo", tituloNota);
+            intentModificarNota.putExtra("texto", textoNota);
+            intentModificarNota.putExtra("id", idNota);
+            startActivityForResult(intentModificarNota, RESULT_OK);
             return true;
         }
         else if (id == R.id.BorrarNota)
         {
             // BORRAR NOTA
+            dbNota.eliminarNota(idNota);
+            Toast.makeText(getApplicationContext(), "Nota Borrada", Toast.LENGTH_SHORT).show();
+            finish();
             return true;
+        }
+        else if (id == android.R.id.home)
+        {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
+
+
+
     }
 }

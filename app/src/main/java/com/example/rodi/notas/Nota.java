@@ -1,13 +1,9 @@
 package com.example.rodi.notas;
 
-import android.widget.Toast;
+import android.content.Context;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
+import java.io.Serializable;
+
 
 /**
  * Created by Rodi on 26/10/2015.
@@ -16,11 +12,28 @@ public class Nota
 {
     private String titulo;
     private String texto;
+    private int id;
 
+    public Nota(){}
+
+    public Nota(int id, String titulo, String texto)
+    {
+        this.id = id;
+        this.texto = texto;
+        this.titulo = titulo;
+    }
     public Nota(String titulo, String texto)
     {
         this.texto = texto;
         this.titulo = titulo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitulo() {
@@ -39,9 +52,18 @@ public class Nota
         this.texto = texto;
     }
 
-    public boolean guardarNota()
+    public boolean guardarNota(Context context)
     {
+        BDNotas bdNotas = new BDNotas(context);
+
+        bdNotas.agregarNota(titulo, texto);
+        bdNotas.close();
         return true;
     }
 
+    public void borrarNota(int id, Context context)
+    {
+        BDNotas bdNotas = new BDNotas(context);
+        bdNotas.eliminarNota(id);
+    }
 }

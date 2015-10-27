@@ -2,9 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MenuPrincipal">
 
     <item android:id="@+id/CrearNuevaNota"
-        android:title="CrearNuevaNota"
+        android:title="Crear Nueva Nota"
         android:showAsAction="always"
         android:icon="@drawable/ic_add_white_24dp"
         />
-
 </menu>

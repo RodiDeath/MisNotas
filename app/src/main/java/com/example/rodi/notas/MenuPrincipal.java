@@ -2,7 +2,9 @@ package com.example.rodi.notas;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +18,23 @@ import java.util.ArrayList;
 public class MenuPrincipal extends Activity {
 
     ListView lvNotas;
-    ArrayList<String> listaNotas=new ArrayList<String>();
+    ArrayList<String> listaNotas=new ArrayList<>();
     ArrayAdapter<String> adapter;
+    ArrayList<Nota> notasBD = new ArrayList<>();
+    BDNotas bdNotas;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
+
+        bdNotas = new BDNotas(getApplicationContext());
 
         adapter=new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 listaNotas);
+
 
         lvNotas = (ListView)findViewById(R.id.listViewNotas);
         lvNotas.setAdapter(adapter);
@@ -34,12 +42,21 @@ public class MenuPrincipal extends Activity {
         lvNotas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intentVerNota = new Intent (getBaseContext(), VerNotaActivity.class);
-                intentVerNota.putExtra("TituloNota", adapter.getItem(position).toString());
+                Intent intentVerNota = new Intent(getBaseContext(), VerNotaActivity.class);
+                intentVerNota.putExtra("IdNota", notasBD.get(position).getId());
+                intentVerNota.putExtra("TituloNota", notasBD.get(position).getTitulo());
+                intentVerNota.putExtra("TextoNota", notasBD.get(position).getTexto());
+
                 startActivity(intentVerNota);
             }
         });
 
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
         recuperarNotas();
     }
 
@@ -81,20 +98,51 @@ public class MenuPrincipal extends Activity {
         if (id == R.id.CrearNuevaNota)
         {
             Intent intentNuevaNota = new Intent(getBaseContext(), NuevaNotaActivity.class);
+            intentNuevaNota.putExtra("accion", "nueva");
             startActivityForResult(intentNuevaNota, 0);
         }
 
         return super.onOptionsItemSelected(item);
-
-
     }
 
     private void recuperarNotas()
     {
-        listaNotas.add("Nota 1");
-        listaNotas.add("Nota 2");
-        listaNotas.add("Nota 3");
-        listaNotas.add("Nota 4");
+        Cursor cursor = bdNotas.obtenerNotas();
+
+        lvNotas.setEnabled(true);
+        cursor.moveToFirst();
+        notasBD.clear();
+        while (!cursor.isAfterLast())
+        {
+            int id = cursor.getInt(cursor.getColumnIndex("_id"));
+            String titulo = cursor.getString(cursor.getColumnIndex("titulo"));
+            String texto = cursor.getString(cursor.getColumnIndex("texto"));
+
+            notasBD.add(new Nota(id, titulo, texto));
+            cursor.moveToNext();
+        }
+
+        listaNotas.clear();
+
+        for (int i = 0; i < notasBD.size(); i++)
+        {
+            listaNotas.add(notasBD.get(i).getTitulo());
+        }
+
+        if (listaNotas.isEmpty())
+        {
+            listaNotas.add("(No hay notas)");
+            lvNotas.setEnabled(false);
+        }
+
         adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        bdNotas.close();
     }
 }

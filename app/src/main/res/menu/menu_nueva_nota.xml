@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/GuardarNota"
-        android:title="GuardarNota"
+        android:title="Guardar Nota"
         android:icon="@drawable/ic_save_white_24dp"
         android:showAsAction="always"
         />
