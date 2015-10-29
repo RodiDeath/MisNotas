@@ -1,6 +1,8 @@
 package com.example.rodi.notas;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -79,19 +81,35 @@ public class VerNotaActivity extends Activity
         else if (id == R.id.BorrarNota)
         {
             // BORRAR NOTA
-            dbNota.eliminarNota(idNota);
-            Toast.makeText(getApplicationContext(), "Nota Borrada", Toast.LENGTH_SHORT).show();
-            finish();
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+
+            adb.setTitle("¿Borrar nota '"+ tituloNota + "'?");
+
+            adb.setIcon(R.drawable.ic_delete_black_48dp);
+
+            adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dbNota.eliminarNota(idNota);
+                    Toast.makeText(getApplicationContext(), "Nota '" + tituloNota + "' Borrada", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+
+            adb.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    Toast.makeText(getApplicationContext(), "Nota NO Borrada", Toast.LENGTH_SHORT).show();
+                }
+            });
+            adb.show();
+
             return true;
         }
         else if (id == android.R.id.home)
         {
             finish();
         }
-
         return super.onOptionsItemSelected(item);
-
-
-
     }
 }
